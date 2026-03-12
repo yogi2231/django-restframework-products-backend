@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, CustomUser, Cart, CartItem, Order, OrderItem, Rating, Wishlist, WishlistItem, Contact
+from .models import Product, CustomUser, Cart, CartItem, Order, OrderItem, Rating, Wishlist, WishlistItem, Contact, Address
 from django.contrib.auth import authenticate
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -126,4 +126,17 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['id', 'user', 'name', 'email', 'phone', 'subject', 'message', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['user', 'created_at', 'updated_at']
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Address
+        fields = [
+            'id', 'user', 'address_line1', 'address_line2', 'city',
+            'state', 'postal_code', 'country', 'is_default',
+            'created_at', 'updated_at'
+        ]
         read_only_fields = ['user', 'created_at', 'updated_at']

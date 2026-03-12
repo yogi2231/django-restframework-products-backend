@@ -3,7 +3,7 @@ from .views import (
     ProductListCreate, ProductDetail, register, login, logout,
     get_cart, add_to_cart, remove_from_cart, update_cart_item, clear_cart,
     orders, create_order_from_cart, ratings, get_wishlist, add_to_wishlist, remove_from_wishlist,
-    UserList, ContactListCreate, ContactDetail
+    UserList, ContactListCreate, ContactDetail, AddressListCreate, AddressDetail
 )
 
  
@@ -30,4 +30,7 @@ urlpatterns = [
     # contact
     path('contacts/', ContactListCreate.as_view(), name='contact_list_create'),
     path('contacts/<int:pk>', ContactDetail.as_view(), name='contact_detail'),
+    # address
+    path('addresses/', AddressListCreate.as_view(), name='address_list_create'),
+    path('addresses/<int:pk>', AddressDetail.as_view(), name='address_detail'),
 ]

@@ -10,11 +10,11 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet, NumberFilter
 from django.db import transaction
-from .models import Product, CustomUser, Cart, CartItem, Order, OrderItem, Rating, Wishlist, WishlistItem, Contact
+from .models import Product, CustomUser, Cart, CartItem, Order, OrderItem, Rating, Wishlist, WishlistItem, Contact, Address
 from .serializers import (
     ProductSerializer, UserRegistrationSerializer, UserLoginSerializer,
     UserSerializer, CartSerializer, CartItemSerializer,
-    OrderSerializer, RatingSerializer, WishlistSerializer, WishlistItemSerializer, ContactSerializer
+    OrderSerializer, RatingSerializer, WishlistSerializer, WishlistItemSerializer, ContactSerializer, AddressSerializer
 )
 
 
@@ -449,3 +449,28 @@ class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         """Update only allows status and message fields to be changed"""
         serializer.save()
+
+
+class AddressListCreate(generics.ListCreateAPIView):
+    """List user's addresses or create a new one"""
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [OrderingFilter, SearchFilter]
+    search_fields = ['address_line1', 'address_line2', 'city', 'state', 'postal_code', 'country']
+    ordering_fields = ['created_at', 'updated_at', 'city', 'state', 'country']
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class AddressDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Retrieve, update, or delete a user address"""
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
